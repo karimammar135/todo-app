@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import {useRouter} from 'next/navigation'
 
-export default function SignUp() {
+export default function LogIn() {
     const router = useRouter();
     const [user, setUser] = useState({
         email: "",
@@ -36,6 +36,15 @@ export default function SignUp() {
             setButtonDisabled(true)
         }
     }, [user])
+
+    // Get users
+    const get_users = async () => {
+        const response = await axios.get("/api/todos/test_connection")
+        console.log("test connection", response.data)
+    }
+    useEffect(() => {
+        get_users()
+    }, [])
 
     return (
         <div className="bg-black flex justify-center items-center min-h-[100vh]">
