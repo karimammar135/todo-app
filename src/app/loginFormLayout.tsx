@@ -51,7 +51,7 @@ const CARDS = [
       designation: "School student",
       content: (
         <p>
-          Don't Forget to do the homework today before the teacher puts me out of the class 🙏
+          Dont Forget to do the homework today before the teacher puts me out of the class 🙏
         </p>
       ),
     },
