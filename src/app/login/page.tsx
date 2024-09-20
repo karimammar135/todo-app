@@ -2,9 +2,11 @@
 
 import {useEffect, useState} from 'react'
 import Link from 'next/link'
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
-import {useRouter} from 'next/navigation'
+import {useRouter} from 'next/navigation';
+
+import LoginFormLayout from '../loginFormLayout';
 
 export default function LogIn() {
     const router = useRouter();
@@ -14,13 +16,19 @@ export default function LogIn() {
     })
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [incorrectField, setIncorrectField] = useState('')
 
     const onLogin = async () => {
         try {
             setLoading(true)
             const response = await axios.post('/api/users/login', user)
-            console.log("Successful login", response.data)
-            router.push('/profile')
+            if (response.data.success === false){
+                toast.error(response.data.error)
+                setIncorrectField(response.data.incorrectField)
+            } else {
+                toast.success("Successfully logged in!")
+                router.push('/profile')
+            }
         } catch(error: any){
             console.log("Unsuccessful login", error)
             toast.error(error)
@@ -37,24 +45,15 @@ export default function LogIn() {
         }
     }, [user])
 
-    // Get users
-    const get_users = async () => {
-        const response = await axios.get("/api/todos/test_connection")
-        console.log("test connection", response.data)
-    }
-    useEffect(() => {
-        get_users()
-    }, [])
-
     return (
-        <div className="bg-black flex justify-center items-center min-h-[100vh]">
-            <div className="bg-white flex flex-col justify-center items-center gap-[10px] p-[10px]">
-                <h1>{loading && "processing..." || "Login"}</h1>
-                <input onChange={(e) => setUser({...user, email: e.target.value})} type='email' placeholder='Email'></input>
-                <input onChange={(e) => setUser({...user, password: e.target.value})} name="pass" type="password" placeholder="password" required></input>
-                <button onClick={onLogin} className={`bg-blue-500 text-white font-bold py-2 px-4 rounded ${buttonDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none': ''}`}>Login</button>
-                <Link href="/signup">Sign up here</Link>
+        <LoginFormLayout action="Login">
+            <h1 className='text-5xl font-extrabold'>{loading && "processing..." || "Login"}</h1>
+            <div className='flex flex-col justify-center items-center w-[100%] gap-5'>
+                <input onChange={(e) => setUser({...user, email: e.target.value})} onClick={() => {if(incorrectField === 'email'){setIncorrectField('')}}} type='email' placeholder='Email' className={((incorrectField === 'email') ? 'border-2 border-solid border-red-600 rounded-full ': '') + 'w-full p-3 border-solid border-2 border-emerald-600 rounded-full outline-emerald-900'}></input>
+                <input onChange={(e) => setUser({...user, password: e.target.value})} onClick={() => {if(incorrectField === 'password'){setIncorrectField('')}}} name="pass" type="password" placeholder="password" className={((incorrectField === 'password') ? 'border-2 border-solid border-red-600 rounded-full ': '') + 'w-full p-3 border-solid border-2 border-emerald-600 rounded-full'} required></input>
+                <button onClick={onLogin} className={`bg-emerald-700 text-white font-bold py-2 px-4 rounded ${buttonDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none': ''}`}>Login</button>
             </div>
-        </div>
+            <Link className='text-blue-500 hover:text-blue-800/[0.6]' href="/signup">Sign up here</Link>
+        </LoginFormLayout>  
     )
 }

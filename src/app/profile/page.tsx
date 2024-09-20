@@ -4,9 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from "next/navigation"
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import Link from 'next/link';
-import { todo } from 'node:test';
-import { get } from 'http';
 
 export default function ProfileDefault() {
   const router = useRouter(); 
