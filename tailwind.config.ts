@@ -25,6 +25,9 @@ const config = {
       "2xl": "1500px"
     },
     extend: {
+      fontFamily: {
+        "poppins": ["Poppins", "sans-serif"]
+      },
       gridTemplateColumns: {
         'sidebarcolumns': 'auto minmax(0, 1fr)'
       },

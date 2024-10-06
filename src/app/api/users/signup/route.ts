@@ -9,7 +9,7 @@ connect()
 export async function POST(request: NextRequest){
     try{
         const reqBody = await request.json()
-        const {username, email, password} = reqBody
+        const {username, email, password, avatar_id} = reqBody
 
         // Check if all filed are given
         if (!(email.length > 0 && username.length > 0 && password.length > 0)){
@@ -23,6 +23,8 @@ export async function POST(request: NextRequest){
             return NextResponse.json({error: 'user already exists', success: false, incorrect_field: "email"}, {status: 200})
         } if (username_user){
             return NextResponse.json({error: 'Username already taken', success: false, incorrect_field: "username"}, {status: 200})
+        } if (avatar_id === 0) {
+            return NextResponse.json({error: 'Select an avatar', success: false, incorrect_field: "avatar"}, {status: 200});
         }
 
         else{
@@ -34,7 +36,8 @@ export async function POST(request: NextRequest){
             const newUser = new User({
                 username,
                 email, 
-                password: hashedPassword
+                password: hashedPassword,
+                avatar_id
             })
             const savedUser = newUser.save()
 
