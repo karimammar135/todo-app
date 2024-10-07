@@ -8,6 +8,7 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
+import Image from "next/image";
 
 export const AnimatedTooltip = ({
   items,
@@ -53,6 +54,7 @@ export const AnimatedTooltip = ({
         >
           <AnimatePresence mode="popLayout">
             {hoveredIndex === item.id && (
+              
               <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.6 }}
                 animate={{
@@ -82,7 +84,7 @@ export const AnimatedTooltip = ({
               </motion.div>
             )}
           </AnimatePresence>
-          <img 
+          <Image
             onMouseMove={handleMouseMove}
             height={100}
             width={100}
@@ -90,8 +92,7 @@ export const AnimatedTooltip = ({
             alt={item.name}
             onClick={() => selectAvatar(item.id)}
             className={(item.id === selectedAvatar ? "border-[3px] border-emerald-800 border-solid": "") + "object-cover !m-0 !p-0 object-top rounded-full h-14 w-14 border-2 group-hover:scale-105 group-hover:z-30 border-white  relative transition duration-500"}
-          ></img>
-          
+          ></Image>
         </div>
     )})}
     </>

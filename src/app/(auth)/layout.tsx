@@ -12,13 +12,7 @@ export default function AuthLayout({children}: {children: React.ReactNode}) {
   const [showPopup, setShowPopup] = useState(false);
  
   // Keep track of window's width
-  useEffect(() => {
-    if (window.innerWidth < 810){
-      setSmallScreen(true)
-    } else {
-      setSmallScreen(false)
-    }
-  }, [])
+  
   useEffect(() => {
     const handleResize = debounce(():void => {
       if (window.innerWidth < 810){
