@@ -13,19 +13,7 @@ export default function AuthLayout({children}: {children: React.ReactNode}) {
  
   // Keep track of window's width
   
-  useEffect(() => {
-    const handleResize = debounce(():void => {
-      if (window.innerWidth < 810){
-        setSmallScreen(true)
-      } else {
-        setSmallScreen(false)
-      }
-    }, 500)
-    window.addEventListener("resize", handleResize)
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
+  
 
   // Debounce helper function
   const debounce = <T extends (...args: any[]) => any>(
