@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Cover } from '@/components/ui/cover';
@@ -12,8 +12,26 @@ export default function AuthLayout({children}: {children: React.ReactNode}) {
   const [showPopup, setShowPopup] = useState(false);
  
   // Keep track of window's width
-  
-  
+  useEffect(():void => {
+    if (window.innerWidth < 810){
+      setSmallScreen(true)
+    } else {
+      setSmallScreen(false)
+    }
+  }, [])
+  useEffect(() => {
+    const handleResize = debounce(():void => {
+      if (window.innerWidth < 810){
+        setSmallScreen(true)
+      } else {
+        setSmallScreen(false)
+      }
+    }, 500)
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   // Debounce helper function
   const debounce = <T extends (...args: any[]) => any>(
@@ -33,17 +51,17 @@ export default function AuthLayout({children}: {children: React.ReactNode}) {
   
   // Html action
   return (
-    <div className="bg-black grid grid-cols-1 1xl:grid-cols-2 gap-6 min-h-[100vh] 1xl:pr-10 pb-10 1xl:pb-0">
-        <div className='flex justify-center items-center order-2 1xl:order-1'>
+    <div className="bg-black grid grid-cols-1 1xl:grid-cols-2 gap-6 min-h-[100vh] 1xl:pr-10 ">
+        <div className='flex justify-center items-center h-fit 1xl:h-auto order-2 1xl:order-1'>
             {!smallScreen && <div className="z-10 w-[100%] max-w-[550px] 1xl:max-w-[400px] 2xl:max-w-[550px] ml-4 mr-4 1xl:mr-0 1xl:ml-6 1xl:mt-4 1xl:mb-4 rounded-3xl bg-white flex flex-col justify-center items-center gap-5 1xl:gap-5 p-8 sm:p-10">
                 {children}
             </div> ||
-            <button onClick={() => setShowPopup(true)} className='z-10 p-[16px] bg-emerald-400 hover:bg-emerald-600 text-white font-poppins rounded-2xl'>Get Started <i className="fa-solid fa-arrow-right-to-bracket"></i></button>
+            <button onClick={() => setShowPopup(true)} className='z-10 mb-5 p-[16px] bg-emerald-400 hover:bg-emerald-600 text-white font-poppins rounded-2xl'>Get Started <i className="fa-solid fa-arrow-right-to-bracket"></i></button>
             }
         </div>
         <div className='flex flex-col gap-6 justify-center items-center order-1 1xl:order-2'>
-            <h1 className="text-4xl md:text-4xl lg:text-5xl leading-loose font-poppins font-semibold max-w-7xl mx-auto text-center mt-6 ml-4 mr-4 1xl:ml-0 1xl:mr-0 relative py-6 bg-clip-text text-white">
-              Schedule your day with <span className='z-0'><Cover className='z-0'>Scheduleia</Cover></span>
+            <h1 className="text-4xl md:text-4xl lg:text-5xl leading-loose font-poppins font-semibold max-w-7xl mx-auto text-center ml-4 mr-4 1xl:ml-0 1xl:mr-0 relative py-6 bg-clip-text text-white">
+              Schedule your day with <span className='z-0'><Cover className='z-10'>Scheduleia</Cover></span>
             </h1>
             <CardStack items={CARDS} />
         </div>

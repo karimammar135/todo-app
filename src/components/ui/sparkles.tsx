@@ -6,7 +6,7 @@ import type { Container, SingleOrMultiple } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "framer-motion";
-
+ 
 type ParticlesProps = {
   id?: string;
   className?: string;
@@ -38,7 +38,7 @@ export const SparklesCore = (props: ParticlesProps) => {
     });
   }, []);
   const controls = useAnimation();
-
+ 
   const particlesLoaded = async (container?: Container) => {
     if (container) {
       controls.start({
@@ -49,7 +49,7 @@ export const SparklesCore = (props: ParticlesProps) => {
       });
     }
   };
-
+ 
   const generatedId = useId();
   return (
     <motion.div animate={controls} className={cn("opacity-0", className)}>
@@ -68,7 +68,7 @@ export const SparklesCore = (props: ParticlesProps) => {
               enable: false,
               zIndex: 1,
             },
-
+ 
             fpsLimit: 120,
             interactivity: {
               events: {
