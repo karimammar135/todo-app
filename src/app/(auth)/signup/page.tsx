@@ -45,7 +45,7 @@ export default function SignUp() {
     const loginUser = async () => {
         try {
             const response = await axios.post('/api/users/login', user)
-            router.push('/profile')
+            router.push('/dashboard')
         } catch(error: any){
             console.log("Unsuccessful login", error)
             toast.error(error)

@@ -27,7 +27,7 @@ export default function LogIn() {
                 setIncorrectField(response.data.incorrectField)
             } else {
                 toast.success("Successfully logged in!")
-                router.push('/profile')
+                router.push('/dashboard')
             }
         } catch(error: any){
             console.log("Unsuccessful login", error)

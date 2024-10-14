@@ -6,48 +6,22 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Cover } from '@/components/ui/cover';
 import { CardStack } from "@/components/ui/card-stack";
 import { cn } from "@/lib/utils";
+import { debounce } from '@/components/ui/debounce';
+import { checkWindowWidth } from "@/helpers/checkWindowWidth"
 
 export default function AuthLayout({children}: {children: React.ReactNode}) {
   const [smallScreen, setSmallScreen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
- 
+  let windowWidth:number = checkWindowWidth()
+
   // Keep track of window's width
   useEffect(():void => {
-    if (window.innerWidth < 810){
+    if (windowWidth < 810){
       setSmallScreen(true)
     } else {
       setSmallScreen(false)
     }
-  }, [])
-  useEffect(() => {
-    const handleResize = debounce(():void => {
-      if (window.innerWidth < 810){
-        setSmallScreen(true)
-      } else {
-        setSmallScreen(false)
-      }
-    }, 500)
-    window.addEventListener("resize", handleResize)
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
-
-  // Debounce helper function
-  const debounce = <T extends (...args: any[]) => any>(
-    callback: T,
-    waitFor: number
-  ) => {
-    let timeout: ReturnType<typeof setTimeout>;
-    return (...args: Parameters<T>): ReturnType<T> => {
-      let result: any;
-      timeout && clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        result = callback(...args);
-      }, waitFor);
-      return result;
-    };
-  };
+  }, [windowWidth])
   
   // Html action
   return (
