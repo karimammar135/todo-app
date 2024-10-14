@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { motion, useAnimation } from "framer-motion";  
 import { avatars } from '@/app/avatars';
-import { checkWindowWidth } from "@/helpers/checkWindowWidth";
+import { useWindowWidth } from "@/helpers/useWindowWidth";
 import {toast} from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 
@@ -14,7 +14,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
     const [sidebar, setSidebar] = useState(true)
     const [isSmall, setIsSmall] = useState(false)
     const router = useRouter()
-    let windowWidth:number = checkWindowWidth()
+    let windowWidth:number = useWindowWidth()
 
     // Fetch profile user details
     const fetchProfile = async () => {
@@ -49,10 +49,12 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
     // Sidebar variant
     const sidebarVariant = {
         hidden: {
-            x: "-100%"
+            x: "-100%",
+            opacity: 0,
         },
         visible: {
             x: 0,
+            opacity: 1,
             transition: {
                 delay: 0.5,
                 when: "beforeChildren",
@@ -86,7 +88,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
 
     return (
         <section>
-            <nav className='flex justify-between items-center px-3 lg:hidden bg-black border-b-[2px] border-gray-300 border-solid h-[70px]'>
+            <nav className='flex justify-between items-center px-3 lg:hidden bg-black border-b-[2px] border-gray-300 border-solid h-[70px] '>
                 <span
                     className="text-white text-4xl left-4 cursor-pointer"
                     onClick={() => toggleSidebar()}
@@ -113,10 +115,11 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                 </div>
             </nav>
             {(sidebar && isSmall) && <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition:{delay: 0.5}}} className='fixed top-0 left-0 w-full h-full backdrop-blur-sm'></motion.div>}
+           
             <motion.div
                 variants={sidebarVariant}
                 initial="hidden"
-                animate={sidebar ? "visible": "hidden"}
+                animate={sidebar === true ? "visible" : "hidden"}
                 className="sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[300px] overflow-y-auto text-center bg-black"
             >
                 <motion.div variants={optionVariant} className="text-gray-100 text-xl">

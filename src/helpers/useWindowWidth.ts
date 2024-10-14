@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { debounce } from '@/components/ui/debounce';
 
 
-export function checkWindowWidth():number {
+export function useWindowWidth():number {
     const [windowWidth, setWindowWidth] = useState(0)
 
     // Keep track of window's width

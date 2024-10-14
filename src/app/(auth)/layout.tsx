@@ -7,12 +7,12 @@ import { Cover } from '@/components/ui/cover';
 import { CardStack } from "@/components/ui/card-stack";
 import { cn } from "@/lib/utils";
 import { debounce } from '@/components/ui/debounce';
-import { checkWindowWidth } from "@/helpers/checkWindowWidth"
+import { useWindowWidth } from "@/helpers/useWindowWidth"
 
 export default function AuthLayout({children}: {children: React.ReactNode}) {
   const [smallScreen, setSmallScreen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  let windowWidth:number = checkWindowWidth()
+  let windowWidth:number = useWindowWidth()
 
   // Keep track of window's width
   useEffect(():void => {
