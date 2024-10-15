@@ -81,7 +81,7 @@ export const TasksGrid = ({
 
       {/* Extra items for nice layout filling */}
       {(items.length < 3 && items.length > 0 && windowWidth >= 768) && [...Array(((windowWidth >= 1024) ? 3: 2) - items.length)].map((elementInArray, index) => {
-        return <Link href="/dashboard/addTodo" className="relative group  block p-2 h-full w-full">
+        return <Link key={index} href="/dashboard/addTodo" className="relative group  block p-2 h-full w-full">
             <div className={cn(
               "flex justify-center items-center rounded-2xl h-full w-full p-4 overflow-hidden bg-gray-100 border border-gray-400 border-dashed dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
               className
