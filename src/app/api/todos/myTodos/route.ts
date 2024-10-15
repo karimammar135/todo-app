@@ -13,7 +13,7 @@ export async function GET(request: NextRequest){
         const user = await User.findOne({email: tokenData.email});
         
         // Get todos filtered to this user
-        const todos = await Todo.find({user: user});
+        const todos = await Todo.find({user: user}, '-user -__v');
 
         // Return todos
         return NextResponse.json(todos);

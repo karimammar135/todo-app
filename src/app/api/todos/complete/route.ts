@@ -9,10 +9,15 @@ export async function PUT(request: NextRequest){
         // Get the requested todo
         const data = await request.json();
         const todo_id = data.todo_id;
+        const method = data.method;
         const todo = await Todo.findById(todo_id);
 
         // Edit todo as completed
-        todo.completed = true;
+        if (method === "incomplete") {
+            todo.completed = false;
+        } else {
+            todo.completed = true;
+        }
         todo.save();
 
         // Return success message

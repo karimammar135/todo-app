@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios';
 import { motion, useAnimation } from "framer-motion";  
 import { avatars } from '@/app/avatars';
 import { useWindowWidth } from "@/helpers/useWindowWidth";
 import {toast} from "react-hot-toast";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import {useClickOutside} from '@/helpers/useClickOutside';
 
 export default function ProfileDefault({children}: {children: React.ReactNode}) {
     const [profile, setProfile] = useState(null)
     const [dropdown, setDropdown] = useState(false)
     const [sidebar, setSidebar] = useState(true)
     const [isSmall, setIsSmall] = useState(false)
+    const profileRef = useRef<any>(null)
     const router = useRouter()
     let windowWidth:number = useWindowWidth()
 
@@ -28,7 +31,11 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
 
     // Detect Mobile screen
     useEffect(() => {
-        if (windowWidth < 500){
+        if (windowWidth < 1024 && windowWidth > 500){
+            setSidebar(false)
+            setIsSmall(false)
+        }
+        else if (windowWidth <= 500){
             setIsSmall(true)
             setSidebar(false)
         } else {
@@ -42,9 +49,10 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
     }
 
     // toggle dropdown
-    function toggleDropdown(){
+    const toggleDropdown = function ():void{
         setDropdown(!dropdown)
     }
+    useClickOutside(profileRef, () => setDropdown(false));
 
     // Sidebar variant
     const sidebarVariant = {
@@ -88,14 +96,14 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
 
     return (
         <section>
-            <nav className='flex justify-between items-center px-3 lg:hidden bg-black border-b-[2px] border-gray-300 border-solid h-[70px] '>
+            {(windowWidth < 1024) && <nav className='flex justify-between items-center px-3 bg-black border-b-[2px] border-gray-300 border-solid h-[70px]'>
                 <span
                     className="text-white text-4xl left-4 cursor-pointer"
                     onClick={() => toggleSidebar()}
                 >
                     <i className="bi bi-filter-left px-2 rounded-md"></i>
                 </span>
-                <div className="text-gray-100 text-xl">
+                <div ref={profileRef} className="text-gray-100 text-xl">
                     <div className="p-2.5 flex items-center">
                         <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover' style={{ backgroundImage: `url(${(avatars[2]).image})` }}></div>
                         <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3">{(profile != null ) && profile['username']}</h1>
@@ -113,14 +121,14 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                         </div>
                     </div>
                 </div>
-            </nav>
-            {(sidebar && isSmall) && <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition:{delay: 0.5}}} className='fixed top-0 left-0 w-full h-full backdrop-blur-sm'></motion.div>}
+            </nav>}
+            {(sidebar && isSmall) && <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition:{delay: 0.5}}} className='fixed top-0 left-0 w-full h-full backdrop-blur-sm z-20'></motion.div>}
            
             <motion.div
                 variants={sidebarVariant}
                 initial="hidden"
                 animate={sidebar === true ? "visible" : "hidden"}
-                className="sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[300px] overflow-y-auto text-center bg-black"
+                className="z-30 sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[300px] overflow-y-auto text-center bg-black"
             >
                 <motion.div variants={optionVariant} className="text-gray-100 text-xl">
                     <div className="p-2.5 mt-1 flex items-center">
@@ -134,21 +142,25 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                     </div>
                     <div className="mb-4 mt-2 bg-gray-600 h-[1px]"></div>
                 </motion.div>
-                <motion.div variants={optionVariant}
-                    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-emerald-600 text-white"
-                >
-                    <i className="bi bi-house-door-fill"></i>
-                    <span className="text-[15px] ml-4 text-gray-200 font-bold">Home</span>
-                </motion.div>
-                <motion.div variants={optionVariant}
-                    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-emerald-600 text-white"
-                >
-                    <i className="fa-solid fa-square-plus"></i>
-                    <span className="text-[15px] ml-4 text-gray-200 font-bold">Add todo</span>
-                </motion.div>
+                <Link href="/dashboard/home">
+                    <motion.div variants={optionVariant}
+                        className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-emerald-600 text-white"
+                    >
+                        <i className="bi bi-house-door-fill"></i>
+                        <span className="text-[15px] ml-4 text-gray-200 font-bold">Home</span>
+                    </motion.div>
+                </Link>
+                <Link href="/dashboard/addTodo">
+                    <motion.div variants={optionVariant}
+                        className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-emerald-600 text-white"
+                    >
+                        <i className="fa-solid fa-square-plus"></i>
+                        <span className="text-[15px] ml-4 text-gray-200 font-bold">Add todo</span>
+                    </motion.div>
+                </Link>
                 <div className="my-4 bg-gray-600 h-[1px] hidden lg:block"></div>
-                <motion.div variants={optionVariant} className="text-gray-100 text-xl hidden lg:block">
-                    <div className="p-2.5 flex items-center">
+                {(windowWidth >= 1024) && <motion.div variants={optionVariant} className="text-gray-100 text-xl">
+                    <div ref={profileRef} className="p-2.5 flex items-center">
                         <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover' style={{ backgroundImage: `url(${(avatars[2]).image})` }}></div>
                         <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3">{(profile != null ) && profile['username']}</h1>
                         <div className=' relative'>
@@ -157,7 +169,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                                 <div
                                     className="absolute bottom-[-40px] right-0 text-left text-sm mt-2 mx-auto text-gray-200 font-bold"
                                 >
-                                    <h1 className="cursor-pointer p-2 bg-slate-500 hover:bg-emerald-600 rounded-md mt-1">
+                                    <h1 onClick={() => logout()} className="cursor-pointer p-2 bg-slate-500 hover:bg-emerald-600 rounded-md mt-1">
                                     Logout
                                     </h1>
                                 </div>
@@ -165,7 +177,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                         </div>
                     </div>
                     {/*<div className="my-2 bg-gray-600 h-[1px]"></div>*/}
-                </motion.div>
+                </motion.div>}
             </motion.div> 
 
             <div className='lg:ml-[300px]'>
