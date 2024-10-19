@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import {useRouter} from 'next/navigation';
 
-import Loader from '@/app/loader';
+import Loader from '@/components/ui/loader';
 
 export default function LogIn() {
     const router = useRouter();

@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 
-import Loader from '@/app/loader';
+import Loader from '@/components/ui/loader';
 import { avatars } from "@/app/avatars";
 
 export default function SignUp() {

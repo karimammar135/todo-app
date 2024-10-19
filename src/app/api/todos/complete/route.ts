@@ -22,7 +22,7 @@ export async function PUT(request: NextRequest){
 
         // Return success message
         return NextResponse.json({
-            "message": "Todo markes as completed",
+            "message": `Todo markes as ${method}`,
         }, {status: 200})
 
     } catch(e: any){

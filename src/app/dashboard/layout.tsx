@@ -9,9 +9,11 @@ import {toast} from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {useClickOutside} from '@/helpers/useClickOutside';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfileDefault({children}: {children: React.ReactNode}) {
     const [profile, setProfile] = useState(null)
+    const [loadingProfile, setLoadingProfile] = useState(false)
     const [dropdown, setDropdown] = useState(false)
     const [sidebar, setSidebar] = useState(true)
     const [isSmall, setIsSmall] = useState(false)
@@ -21,9 +23,10 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
 
     // Fetch profile user details
     const fetchProfile = async () => {
+        setLoadingProfile(true)
         const response = await axios.get("/api/users/me");
         setProfile(response.data);
-        console.log(response.data);
+        setLoadingProfile(false)
     }
     useEffect(() => {
         fetchProfile()
@@ -105,8 +108,16 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                 </span>
                 <div ref={profileRef} className="text-gray-100 text-xl">
                     <div className="p-2.5 flex items-center">
-                        <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover' style={{ backgroundImage: `url(${(avatars[2]).image})` }}></div>
-                        <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3">{(profile != null ) && profile['username']}</h1>
+                        {(profile != null ) && <>
+                        <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover cursor-pointer' style={{ backgroundImage: `url(${(avatars[profile['avatar_id']]).image})` }}></div>
+                        <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3 cursor-pointer">{profile['username']}</h1></> ||
+                            <div className="flex items-center space-x-4">
+                                <Skeleton className="h-[40px] w-[40px] rounded-full" />
+                                <div className="space-y-2">
+                                <Skeleton className="h-4 w-[90px]" />
+                                </div>
+                            </div>
+                        }
                         <div className=' relative'>
                             <i onClick={() => toggleDropdown()} className={(dropdown ? 'bi-chevron-up': 'bi-chevron-down') + ' bi cursor-pointer ml-3 text-[16px]'}></i>
                             {dropdown && 
@@ -161,8 +172,16 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                 <div className="my-4 bg-gray-600 h-[1px] hidden lg:block"></div>
                 {(windowWidth >= 1024) && <motion.div variants={optionVariant} className="text-gray-100 text-xl">
                     <div ref={profileRef} className="p-2.5 flex items-center">
-                        <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover' style={{ backgroundImage: `url(${(avatars[2]).image})` }}></div>
-                        <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3">{(profile != null ) && profile['username']}</h1>
+                        {(profile != null ) && <>
+                        <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover cursor-pointer' style={{ backgroundImage: `url(${(avatars[profile['avatar_id']]).image})` }}></div>
+                        <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3 cursor-pointer">{profile['username']}</h1></> ||
+                            <div className="flex items-center space-x-4">
+                                <Skeleton className="h-[40px] w-[40px] rounded-full" />
+                                <div className="space-y-2">
+                                <Skeleton className="h-4 w-[90px]" />
+                                </div>
+                            </div>
+                        }
                         <div className=' relative'>
                             <i onClick={() => toggleDropdown()} className={(dropdown ? 'bi-chevron-up': 'bi-chevron-down') + ' bi cursor-pointer ml-3 text-[16px]'}></i>
                             {dropdown && 

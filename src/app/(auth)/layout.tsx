@@ -32,9 +32,9 @@ export default function AuthLayout({children}: {children: React.ReactNode}) {
                 {children}
             </div>
         </div>}
-        <div className='flex flex-col gap-6 justify-center items-center order-1 1xl:order-2'>
-            <h1 className="text-4xl md:text-4xl lg:text-5xl leading-loose font-poppins font-semibold max-w-7xl mx-auto text-center ml-4 mr-4 1xl:ml-0 1xl:mr-0 relative py-6 bg-clip-text text-white">
-              Schedule your day with <span className='z-0'><Cover className='z-10'>Scheduleia</Cover></span>
+        <div className='z-0 flex flex-col gap-6 justify-center items-center order-1 1xl:order-2'>
+            <h1 className="text-4xl md:text-4xl lg:text-5xl leading-loose font-poppins font-semibold max-w-7xl text-center mx-4 1xl:ml-0 1xl:mr-0 relative py-6 bg-clip-text text-white">
+              Schedule your day with <span className='z-0'><Cover >Scheduleia</Cover></span>
             </h1>
             <CardStack items={CARDS} />
             {smallScreen &&
