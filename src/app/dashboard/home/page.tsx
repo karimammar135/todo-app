@@ -4,12 +4,6 @@ import axios from 'axios';
 import { TasksGrid } from '@/components/ui/tasks-grid'
 import toast from 'react-hot-toast';
 import { Skeleton } from "@/components/ui/skeleton"
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-    title: "Home page",
-    description: "Display scheduleia todos.",
-};
 
 type TodosType = {_id: number, title: string, content: string, completed: boolean}[]
 
@@ -56,7 +50,7 @@ export default function Home() {
 function TodosSkeleton(){
     return (
         <div className='grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10 px-2'>    
-            {Array.from({length: 6}).map((_, index) => (
+            {Array.from({length: 9}).map((_, index) => (
                 <Skeleton key={index} className="rounded-2xl h-full min-h-[200px] w-full p-4 z-10" />
             ))}
         </div>
