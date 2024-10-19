@@ -51,7 +51,7 @@ export function TodosSkeleton(){
     return (
         <div className='grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10 px-2'>    
             {Array.from({length: 6}).map((_, index) => (
-                <Skeleton className="rounded-2xl h-full min-h-[200px] w-full p-4 z-10" />
+                <Skeleton key={index} className="rounded-2xl h-full min-h-[200px] w-full p-4 z-10" />
             ))}
         </div>
     )
