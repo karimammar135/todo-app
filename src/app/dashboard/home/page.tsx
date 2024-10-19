@@ -4,6 +4,12 @@ import axios from 'axios';
 import { TasksGrid } from '@/components/ui/tasks-grid'
 import toast from 'react-hot-toast';
 import { Skeleton } from "@/components/ui/skeleton"
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Home page",
+    description: "Display scheduleia todos.",
+};
 
 type TodosType = {_id: number, title: string, content: string, completed: boolean}[]
 

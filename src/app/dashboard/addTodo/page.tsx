@@ -21,6 +21,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from '@/components/ui/textarea';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Add todo page",
+    description: "Add as much todos as you want.",
+};
  
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters.",}),
