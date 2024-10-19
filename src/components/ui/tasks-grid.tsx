@@ -116,7 +116,7 @@ export const TasksGrid = ({
                     <DialogHeader>
                       <DialogTitle>Edit Content</DialogTitle>
                       <DialogDescription>
-                        Make changes to your task from here. Click save when you're done.
+                        {"Make changes to your task from here. Click save when you're done."}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-3">
