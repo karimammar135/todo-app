@@ -31,6 +31,7 @@ export default function SignUp() {
                 setIncorrectField(response.data.incorrect_field)
             } else {
                 toast.success("Successfully signed up!")
+                console.log(response.data)
                 // loginUser()
             }
         } catch(error: any){

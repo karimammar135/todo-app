@@ -49,6 +49,7 @@ export async function POST(request: NextRequest){
             // Return a success message
             return NextResponse.json({
                 message: "User was successfully added",
+                emailresponse: emailresponse,
                 success: true,
                 savedUser
             })
