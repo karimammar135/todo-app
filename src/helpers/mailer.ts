@@ -18,26 +18,29 @@ export const sendEmail = async(email: string, emailType: string, userId: number 
         }
 
         // Create a transporter object for smtp
-        const transport = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // use false for STARTTLS; true for SSL on port 465
-            auth: {
-                user: process.env.SMTP_GMAIL_ADDRESS,
-                pass: process.env.SMTP_GMAIL_ADDRESS_PASS,
-            }
-        });
+        // const transport = nodemailer.createTransport({
+        //     host: 'smtp.gmail.com',
+        //     port: 587,
+        //     secure: false, // use false for STARTTLS; true for SSL on port 465
+        //     auth: {
+        //         user: process.env.SMTP_GMAIL_ADDRESS,
+        //         pass: process.env.SMTP_GMAIL_ADDRESS_PASS,
+        //     }
+        // });
 
         // Send mail
-        const mailOptions = {
-            from: "fornelbatoul@gmail.com",
-            to: email,
-            subject: emailType === emailTypes.verify ? "Verify Token": "Reset password",
-            html: emailHtml(hashedToken)
-        }
-        const mailresponse = await transport.sendMail(mailOptions)
+        // const mailOptions = {
+        //     from: "fornelbatoul@gmail.com",
+        //     to: email,
+        //     subject: emailType === emailTypes.verify ? "Verify Token": "Reset password",
+        //     html: emailHtml(hashedToken)
+        // }
+        // const mailresponse = await transport.sendMail(mailOptions)
         
-        return mailresponse;
+        return {
+            user: process.env.SMTP_GMAIL_ADDRESS,
+            pass: process.env.SMTP_GMAIL_ADDRESS_PASS,
+        };
     } catch (e: any) {
         throw new Error(e.message);
     }
