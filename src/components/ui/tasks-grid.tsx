@@ -70,18 +70,17 @@ export const TasksGrid = ({
     {(items != undefined && items.length === 0) && <div className="w-full flex justify-center items-center mt-8"><span className="text-gray-500">No added tasks yet.</span></div>}
     <div
       className={cn(
-        "grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 py-10 px-2",
+        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10 px-2",
         className
       )}
     > 
       {(items != undefined) && items.map((item, idx) => (
         <div
           key={item?._id}
-          className="relative group  block p-2 h-full w-full"
+          className="relative group block p-2 h-full w-full"
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
         >
-          
           <AnimatePresence>
             {hoveredIndex === idx && (
               <motion.span

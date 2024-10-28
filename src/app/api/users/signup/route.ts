@@ -2,7 +2,7 @@ import connect from '@/dbConfig/dbConfig'
 import User from '@/models/userModel'
 import { NextRequest, NextResponse } from 'next/server'
 import bcryptjs from 'bcryptjs'
-import { sendEmail } from '@/helpers/mailer'
+import { sendEmail } from '@/helpers/generateOtp'
 import { emailTypes } from '@/app/enums'
 
 connect()
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest){
             return NextResponse.json({error: 'user already exists', success: false, incorrect_field: "email"}, {status: 200})
         } if (username_user){
             return NextResponse.json({error: 'Username already taken', success: false, incorrect_field: "username"}, {status: 200})
-        } if (avatar_id === 0) {
+        } if (avatar_id < 0) {
             return NextResponse.json({error: 'Select an avatar', success: false, incorrect_field: "avatar"}, {status: 200});
         }
 
@@ -44,7 +44,6 @@ export async function POST(request: NextRequest){
 
             // Send verification email
             const emailresponse = await sendEmail(email, emailTypes.verify, savedUser.id)
-            console.log(emailresponse)
 
             // Return a success message
             return NextResponse.json({

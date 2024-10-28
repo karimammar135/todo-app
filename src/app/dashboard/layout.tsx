@@ -31,7 +31,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
     useEffect(() => {
         fetchProfile()
     }, [])
-
+    
     // Detect Mobile screen
     useEffect(() => {
         if (windowWidth < 1024 && windowWidth > 500){
@@ -109,7 +109,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                 <div ref={profileRef} className="text-gray-100 text-xl">
                     <div className="p-2.5 flex items-center">
                         {(profile != null ) && <>
-                        <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover cursor-pointer' style={{ backgroundImage: `url(${(avatars[profile['avatar_id']]).image})` }}></div>
+                        <div className='w-[40px] h-[40px] rounded-full bg-center bg-cover cursor-pointer' style={{ backgroundImage: `url(${avatars[profile['avatar_id']].image})` }}></div>
                         <h1 className="font-poppins font-bold text-gray-200 text-[15px] ml-3 cursor-pointer">{profile['username']}</h1></> ||
                             <div className="flex items-center space-x-4">
                                 <Skeleton className="h-[40px] w-[40px] rounded-full" />

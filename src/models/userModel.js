@@ -14,10 +14,10 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
-    forgotPasswordToken: String,
-    forgotPasswordTokenExpiry: Date,
-    verifyToken: String,
-    verifyTokenExpiryDate: Date,
+    forgotPasswordOtp: String,
+    forgotPasswordOtpExpiry: Date,
+    verifyOtp: String,
+    verifyOtpExpiryDate: Date,
 })
 
 const User = mongoose.models.users || mongoose.model("users", userSchema)

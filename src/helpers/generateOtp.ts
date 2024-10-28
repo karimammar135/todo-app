@@ -1,20 +1,28 @@
+import crypto from 'crypto';
+import bcryptjs from 'bcryptjs';
 import nodemailer from "nodemailer";
 import User from "@/models/userModel";
-import bcryptjs from "bcryptjs";
 import { emailTypes } from "@/app/enums";
+import { getFutureDate } from './getFutureDate';
 
 export const sendEmail = async(email: string, emailType: string, userId: number | string) => {
     try {
-        // Hash the token
-        const hashedToken = await bcryptjs.hash(userId.toString(), 10)
+        // Generate a six digit number using the crypto module
+        const otp:number = crypto.randomInt(100000, 999999)
 
-        // Save token data in the database
+        // Create a hashed otp
+        const hashedOtp = await bcryptjs.hash(otp.toString(), 10)
+
+        // Save otp data in the database
+        const futureDate = getFutureDate(10)
         if (emailType === emailTypes.verify){
             await User.findByIdAndUpdate(userId, {
-                verifyToken: hashedToken, verifyTokenExpiryDate: Date.now() + 3600000})
+                verifyOtp: hashedOtp, verifyOtpExpiryDate: futureDate // 10min
+            })
         } else if (emailType === emailTypes.resetPassword){
             await User.findByIdAndUpdate(userId, {
-                forgotPasswordToken: hashedToken, forgotPasswordTokenExpiry: Date.now() + 3600000})
+                forgotPasswordOtp: hashedOtp, forgotPasswordOtpExpiry: futureDate // 10min
+            })
         }
 
         // Create a transporter object for smtp
@@ -27,13 +35,21 @@ export const sendEmail = async(email: string, emailType: string, userId: number 
                 pass: process.env.SMTP_GMAIL_ADDRESS_PASS,
             }
         });
+        // var transport = nodemailer.createTransport({
+        //     host: "sandbox.smtp.mailtrap.io",
+        //     port: 2525,
+        //     auth: {
+        //       user: "68a2ac274637d3",
+        //       pass: "15c7c17d937dff"
+        //     }
+        // });
 
         // Send mail
         const mailOptions = {
             from: "fornelbatoul@gmail.com",
             to: email,
-            subject: emailType === emailTypes.verify ? "Verify Token": "Reset password",
-            html: emailHtml(hashedToken)
+            subject: emailType === emailTypes.verify ? "Verification Otp": "Reset password Otp",
+            html: emailHtml(otp, emailType === emailTypes.verify ? "Thank you for Signing up with Scheduleia": "Reset your password", emailType === emailTypes.verify ? "Verify Your email address and start using our amazing services !": "")
         }
         const mailresponse = await transport.sendMail(mailOptions)
         
@@ -44,7 +60,7 @@ export const sendEmail = async(email: string, emailType: string, userId: number 
 }
 
 // Email UI in user's gmail inbox
-const emailHtml = function(hashedToken: string):string { return `
+const emailHtml = function(otp: number, title: string, description: string):string { return `
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 <head>
@@ -250,7 +266,7 @@ text-decoration: none
 <!--[if !mso]>-->
 <td class="t11" style="width:280px;">
 <!--<![endif]-->
-<h1 class="t10" style="margin:0;Margin:0;font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:35px;font-weight:800;font-style:normal;font-size:30px;text-decoration:none;text-transform:none;letter-spacing:-1.2px;direction:ltr;color:#333333;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">Thank you for Signing up with Scheduleia&nbsp;</h1></td>
+<h1 class="t10" style="margin:0;Margin:0;font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:35px;font-weight:800;font-style:normal;font-size:30px;text-decoration:none;text-transform:none;letter-spacing:-1.2px;direction:ltr;color:#333333;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">${title}&nbsp;</h1></td>
 </tr></table>
 </td></tr><tr><td><div class="t13" style="mso-line-height-rule:exactly;mso-line-height-alt:16px;line-height:16px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr><tr><td align="left">
 <table class="t16" role="presentation" cellpadding="0" cellspacing="0" style="Margin-right:auto;">
@@ -261,7 +277,7 @@ text-decoration: none
 <!--[if !mso]>-->
 <td class="t15" style="width:280px;">
 <!--<![endif]-->
-<p class="t14" style="margin:0;Margin:0;font-family:Inter Tight,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:21px;font-weight:400;font-style:normal;font-size:14px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">Verify You email address and start using our amazing services !</p></td>
+<p class="t14" style="margin:0;Margin:0;font-family:Inter Tight,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:21px;font-weight:400;font-style:normal;font-size:14px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">${description}</p></td>
 </tr></table>
 </td></tr><tr><td><div class="t17" style="mso-line-height-rule:exactly;mso-line-height-alt:30px;line-height:30px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr><tr><td align="center">
 <table class="t20" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;">
@@ -272,7 +288,9 @@ text-decoration: none
 <!--[if !mso]>-->
 <td class="t19" style="background-color:#059669;overflow:hidden;width:260px;text-align:center;line-height:24px;mso-line-height-rule:exactly;mso-text-raise:2px;padding:10px 10px 10px 10px;border-radius:10px 10px 10px 10px;">
 <!--<![endif]-->
-<a href="${process.env.DOMAIN}/verifytoken?token=${hashedToken}" target="_blank" class="t18" style="display:block;margin:0;Margin:0;font-family:Inter Tight,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:24px;font-weight:600;font-style:normal;font-size:16px;text-decoration:none;direction:ltr;color:#FFFFFF;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">Click to Verify Token</a></td>
+<span class="t18" style="display:block;margin:0;Margin:0;font-family:Inter Tight,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:24px;font-weight:600;font-style:normal;font-size:16px;text-decoration:none;direction:ltr;color:#FFFFFF;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">
+otp: ${otp}
+</span></td>
 </tr></table>
 </td></tr><tr><td><div class="t23" style="mso-line-height-rule:exactly;mso-line-height-alt:12px;line-height:12px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr><tr><td align="center">
 <table class="t25" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;">
@@ -283,7 +301,7 @@ text-decoration: none
 <!--[if !mso]>-->
 <td class="t24" style="width:280px;">
 <!--<![endif]-->
-<p class="t22" style="margin:0;Margin:0;font-family:Inter Tight,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:21px;font-weight:400;font-style:normal;font-size:14px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">or <span class="t21" style="margin:0;Margin:0;font-weight:700;font-style:normal;text-decoration:none;direction:ltr;color:#000000;mso-line-height-rule:exactly;">copy &amp; paste</span> this link to the browser: ${process.env.DOMAIN}/verifytoken?token=${hashedToken}</p></td>
+<p class="t22" style="margin:0;Margin:0;font-family:Inter Tight,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:21px;font-weight:400;font-style:normal;font-size:14px;text-decoration:none;text-transform:none;direction:ltr;color:#555555;text-align:center;mso-line-height-rule:exactly;mso-text-raise:2px;">This token is valid for 10 min</p></td>
 </tr></table>
 </td></tr></table></td>
 </tr></table>

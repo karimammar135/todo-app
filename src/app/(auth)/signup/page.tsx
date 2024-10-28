@@ -16,7 +16,7 @@ export default function SignUp() {
         username: "",
         email: "",
         password: "",
-        avatar_id: 0,
+        avatar_id: -1,
     })
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -30,8 +30,9 @@ export default function SignUp() {
                 toast.error(response.data.error)
                 setIncorrectField(response.data.incorrect_field)
             } else {
-                toast.success("Successfully signed up!")
+                toast.success("OTP verification code has been sent to your email")
                 console.log(response.data)
+                router.push(`/verifyOtp?email=${user.email}`)
                 // loginUser()
             }
         } catch(error: any){
