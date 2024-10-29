@@ -35,25 +35,16 @@ export default function SignUp() {
                 router.push(`/verifyOtp?email=${user.email}`)
                 // loginUser()
             }
-        } catch(error: any){
-            console.log(`Unsuccessful signup..`, error.message)
-            toast.error(error.message)
+        } catch(e: any){
+            console.log(`Unsuccessful signup..`, e)
+            console.log(e.response.data.error)
+            toast.error(e.response.data.error)
         } finally {
             setLoading(false)
         }
     }
 
-    // Login User after sign up
-    const loginUser = async () => {
-        try {
-            const response = await axios.post('/api/users/login', user)
-            router.push('/dashboard/home')
-        } catch(error: any){
-            console.log("Unsuccessful login", error)
-            toast.error(error)
-        }
-    }
-
+    // Control button disabled
     useEffect(() => {
         if(user.email.length > 0 && user.username.length > 0 && user.password.length > 0){
             setButtonDisabled(false)

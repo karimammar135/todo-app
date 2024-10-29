@@ -5,7 +5,7 @@ import { sendEmail } from "@/helpers/generateOtp"
 import { emailTypes } from "@/app/enums";
 import { getFutureDate } from "@/helpers/getFutureDate"
 import bcryptjs from "bcryptjs"
-import jwt from 'jsonwebtoken'
+import { setLoginToken } from "@/helpers/setLoginToken";
 
 connect()
 
@@ -16,14 +16,14 @@ export async function POST(request: NextRequest){
 
         // Verify Password matching
         if (!(newPassword === confirmPassword)) {
-            return NextResponse.json({error: "Password confirmation isn't applicable", success: false}, {status: 400})
+            return NextResponse.json({error: "Password & confirmation aren't applicable", success: false}, {status: 400})
         }
 
         // If sending OTP is the action
         if(action === "sendOtp") {
             // Get the user
             const user = await User.findOne({email});
-            if (!user){
+            if (!user || user.isVerified === false){
                 return NextResponse.json({error: "Invalid user", success: false}, {status: 400});
             }
             // Send the email
@@ -42,14 +42,12 @@ export async function POST(request: NextRequest){
             if (!user){
                 return NextResponse.json({error: "OTP has expired", success: false}, {status: 400});
             }
+
             // Verify otp match
             const otpMatch = await bcryptjs.compare(optValue.toString(), user.forgotPasswordOtp)
             console.log(otpMatch)
             // If otp doesn't matche throw an error
             if (!otpMatch){
-                user.forgotPasswordOtp = undefined
-                user.forgotPasswordOtpExpiry = undefined
-                await user.save()
                 return NextResponse.json({error: "OTP mismatch"}, {status: 400})
             } else {
                 // Update password
@@ -61,30 +59,11 @@ export async function POST(request: NextRequest){
                 await user.save()
                 
                 // Then sign up the user(login automatically)
-                // Create token
-                const tokenData = {
-                    id: user._id,
-                    email: user.email,
-                    username: user.username
-                }
-                const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
-
-                // Create response
-                const response = NextResponse.json({
-                    message: "Password was successfully updated", 
-                    success: true
-                })
-                // Set cookies
-                response.cookies.set("token", token, {
-                    httpOnly: true,
-                })
-
+                const response = setLoginToken(user, "Password was successfully updated")
                 return response;
             }
             // return NextResponse.json({message: "Password was successfully updated", success: true})
         }
-
-        return NextResponse.json({message: "okay1"});
     } catch(e: any) {
         throw new Error(e)
     }

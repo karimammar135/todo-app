@@ -12,33 +12,41 @@ import {
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import Loader from "@/components/ui/loader"
 
 export default function VerifyEmailPage() {
   const router = useRouter()
   const [isVerified, setIsVerified] = useState<boolean>(false)
-  const [optValue, setOptValue] = React.useState<string>("")
-  const [disabled, setDisabled] = React.useState<boolean>(false)
-  const [email, setEmail] = React.useState<string>("")
+  const [loading, setLoading] = useState(false)
+  const [optValue, setOptValue] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
+  const [error, setError] = useState<boolean>(false)
 
   // Check when all fields are filled then verify the user
   useEffect(() => {
     if (optValue.length === 6) {
       console.log(Number(optValue))
-      if (email.length > 0) {verifyUserEmail(); setDisabled(true)};
+      if (email.length > 0) {verifyUserEmail()};
+    }
+    // Remove error when retyping the otp code
+    if (optValue.length < 6){
+      setError(false)
     }
   }, [optValue])
 
   // Verify the user
   const verifyUserEmail = async () => {
+    setLoading(true)
     try{
       const response = await axios.post("/api/users/verifyemail", {optValue, email})
       toast.success(response.data.message)
       setIsVerified(true)
       router.push("/dashboard/home")
     } catch(e: any){
-      setDisabled(false)
+      setError(true)
       toast.error(e.response.data.error)
-      router.push("/signup")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -48,6 +56,8 @@ export default function VerifyEmailPage() {
   }, [])
 
   return (
+    <>
+    {loading && <Loader></Loader>}
     <div className='flex justify-center items-center bg-black min-h-[100vh]'>
       {isVerified && <h1 className='text-white'>Your email has been successfully verified! <i className="fa-regular fa-thumbs-up text-emerald-600"></i></h1> ||
        <div className="space-y-2 z-10">
@@ -55,7 +65,6 @@ export default function VerifyEmailPage() {
             maxLength={6}
             value={optValue}
             onChange={(optValue) => setOptValue(optValue)}
-            className={disabled ? "opacity-50" : ""}
           >
             <InputOTPGroup>
               <InputOTPSlot index={0} className='text-white'/>
@@ -66,7 +75,7 @@ export default function VerifyEmailPage() {
               <InputOTPSlot index={5} className='text-white'/>
             </InputOTPGroup>
           </InputOTP>
-          <div className="text-center text-sm text-white">
+          <div className={(error ? "text-red-600": "text-white") + " text-center text-sm"}>
             {optValue === "" ? (
               <>Enter your one-time password.</>
             ) : (
@@ -77,5 +86,6 @@ export default function VerifyEmailPage() {
       }
       <BackgroundBeams />
     </div>
+    </>
   )
 }
