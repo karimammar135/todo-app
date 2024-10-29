@@ -26,23 +26,23 @@ export const sendEmail = async(email: string, emailType: string, userId: number 
         }
 
         // Create a transporter object for smtp
-        // const transport = nodemailer.createTransport({
-        //     host: 'smtp.gmail.com',
-        //     port: 587,
-        //     secure: false, // use false for STARTTLS; true for SSL on port 465
-        //     auth: {
-        //         user: process.env.SMTP_GMAIL_ADDRESS,
-        //         pass: process.env.SMTP_GMAIL_ADDRESS_PASS,
-        //     }
-        // });
-        var transport = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
+        const transport = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // use false for STARTTLS; true for SSL on port 465
             auth: {
-              user: "68a2ac274637d3",
-              pass: "15c7c17d937dff"
+                user: process.env.SMTP_GMAIL_ADDRESS,
+                pass: process.env.SMTP_GMAIL_ADDRESS_PASS,
             }
         });
+        // var transport = nodemailer.createTransport({
+        //     host: "sandbox.smtp.mailtrap.io",
+        //     port: 2525,
+        //     auth: {
+        //       user: "68a2ac274637d3",
+        //       pass: "15c7c17d937dff"
+        //     }
+        // });
 
         // Send mail
         const mailOptions = {
