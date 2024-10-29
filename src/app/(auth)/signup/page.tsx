@@ -87,7 +87,12 @@ export default function SignUp() {
                 <input onChange={(e) => setUser({...user, password: e.target.value})} name="pass" type="password" placeholder="password" required className='w-full font-poppins bg-[#F1FFF6] text-[#626262] placeholder:text-[#626262] p-3 border-solid border-2 border-emerald-600 rounded-sm outline-emerald-900'></input>
             </div> 
             <button onClick={onSignup} className={`w-full h-[50px] font-poppins bg-emerald-700 text-white font-bold py-2 px-4 rounded-sm ${buttonDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none': ''}`}>Sign up</button>
-            <Link className='text-blue-500 hover:text-blue-800/[0.6]' href="/login">Login in here</Link>
+            <div className='flex '>
+                <span className='text-[14px]'>
+                    Already have an account?
+                    <Link className='ml-2 text-[14px] text-blue-500 hover:text-blue-800/[0.6]' href="/login">Login here</Link>
+                </span>
+            </div>
         </>
     )
 }
