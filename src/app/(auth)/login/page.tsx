@@ -59,7 +59,7 @@ export default function LogIn() {
             </div>
             <div className='flex '>
                 <span className='text-[14px]'>
-                    Don't have an account?
+                    {`Don't have an account?`}
                     <Link className='ml-2 text-[14px] text-blue-500 hover:text-blue-800/[0.6]' href="/signup">Sign up here</Link>
                 </span>
             </div>
