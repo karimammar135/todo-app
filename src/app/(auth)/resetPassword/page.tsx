@@ -56,6 +56,7 @@ export default function ResetPassword() {
 
     // Verify the user
     const verifyUserEmail = async () => {
+        setLoading(true)
         try{
             const response = await axios.post("/api/users/resetPassword", {email: formValues!.email, newPassword: formValues!.newPassword, confirmPassword: formValues!.confirmPassword, action: "updatePassword", optValue: optValue})
             toast.success(response.data.message)
@@ -64,6 +65,8 @@ export default function ResetPassword() {
             setDisabled(false)
             toast.error(e.response.data.error)
             setError(true)
+        } finally {
+            setLoading(false)
         }
     }
 

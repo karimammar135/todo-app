@@ -10,10 +10,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {useClickOutside} from '@/helpers/useClickOutside';
 import { Skeleton } from '@/components/ui/skeleton';
+import Loader from "@/components/ui/loader"
 
 export default function ProfileDefault({children}: {children: React.ReactNode}) {
     const [profile, setProfile] = useState(null)
     const [loadingProfile, setLoadingProfile] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [dropdown, setDropdown] = useState(false)
     const [sidebar, setSidebar] = useState(true)
     const [isSmall, setIsSmall] = useState(false)
@@ -87,6 +89,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
 
     // Logout function
     const logout = async () => {
+        setLoading(true)
         try {
             await axios.get("/api/users/logout")
             toast.success("logged out")
@@ -94,11 +97,14 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
         } catch(error: any){
             console.error(error);
             toast.error(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
     return (
-        <section>
+        <section className='relative'>
+            {loading && <Loader></Loader>}
             {(windowWidth < 1024) && <nav className='flex justify-between items-center px-3 bg-black border-b-[2px] border-gray-300 border-solid h-[70px]'>
                 <span
                     className="text-white text-4xl left-4 cursor-pointer"
@@ -153,7 +159,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                     </div>
                     <div className="mb-4 mt-2 bg-gray-600 h-[1px]"></div>
                 </motion.div>
-                <Link href="/dashboard/home">
+                <Link href="/dashboard/home" onClick={() => toggleSidebar()}>
                     <motion.div variants={optionVariant}
                         className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-emerald-600 text-white"
                     >
@@ -161,7 +167,7 @@ export default function ProfileDefault({children}: {children: React.ReactNode}) 
                         <span className="text-[15px] ml-4 text-gray-200 font-bold">Home</span>
                     </motion.div>
                 </Link>
-                <Link href="/dashboard/addTodo">
+                <Link href="/dashboard/addTodo" onClick={() => toggleSidebar()}>
                     <motion.div variants={optionVariant}
                         className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-emerald-600 text-white"
                     >
